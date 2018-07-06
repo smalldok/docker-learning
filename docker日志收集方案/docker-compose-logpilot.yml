@@ -1,0 +1,28 @@
+version: "2"
+services:
+    pilot:
+      image: registry.cn-hangzhou.aliyuncs.com/acs-sample/log-pilot:latest
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - /:/host
+    privileged: true
+    environment:
+      FLUENTD_OUTPUT: elasticsearch #按照您的需要替换
+      ELASTICSEARCH_HOST: ${elasticsearch} #按照您的需要替换
+      ELASTICSEARCH_PORT: 9200
+      logging:
+        driver: json-file
+        options:
+           max-size: "10m"
+           max-file: "5"
+    cpu_shares: 512  #限制CPU使用份额权重,默认1024
+    mem_limit: 600m  #内存限制600M
+    memswap_limit: 800m #内存+swap限制800M
+      blkio_config:
+        weight: 300 #限制读写磁盘带宽,默认500,取值0-1000
+      networks:
+        - webnet
+
+networks:
+    webnet:
+       driver: bridge

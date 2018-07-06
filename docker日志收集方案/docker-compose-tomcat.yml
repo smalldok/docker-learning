@@ -1,0 +1,22 @@
+version: "2"
+services:
+    mytomcat:
+      image: tomcat:latest
+      ports:
+        - 8080:8080
+      volumes:
+        - /usr/local/tomcat/logs
+      labels:
+        - "aliyun.logs.catalina=stdout"
+        - "aliyun.logs.access=/usr/local/tomcat/logs/localhost_access_log.*.txt"
+      logging:
+        driver: json-file
+        options:
+           max-size: "10m"
+           max-file: "5"
+      networks:
+        - webnet
+
+networks:
+    webnet:
+       driver: bridge
